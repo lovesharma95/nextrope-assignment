@@ -1,0 +1,26 @@
+{
+  "name": "project-management-service",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/project-management-service/src",
+  "projectType": "application",
+  "tags": [],
+  "targets": {
+    "serve": {
+      "executor": "@nx/js:node",
+      "defaultConfiguration": "development",
+      "dependsOn": ["build"],
+      "options": {
+        "buildTarget": "project-management-service:build",
+        "runBuildTargetDependencies": false
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "project-management-service:build:development"
+        },
+        "production": {
+          "buildTarget": "project-management-service:build:production"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "name": "time-tracking-service",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/time-tracking-service/src",
+  "projectType": "application",
+  "tags": [],
+  "targets": {
+    "serve": {
+      "executor": "@nx/js:node",
+      "defaultConfiguration": "development",
+      "dependsOn": ["build"],
+      "options": {
+        "buildTarget": "time-tracking-service:build",
+        "runBuildTargetDependencies": false
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "time-tracking-service:build:development"
+        },
+        "production": {
+          "buildTarget": "time-tracking-service:build:production"
+        }
+      }
+    }
+  }
+}
