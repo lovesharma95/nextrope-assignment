@@ -27,8 +27,8 @@ export class Config {
         username: env.DB_USERNAME,
         password: env.DB_PASSWORD,
         database: env.DB_DATABASE,
-        synchronize: env.DB_SYNCHRONIZE as unknown as boolean,
-        autoLoadEntities: env.DB_AUTOLOADENTITIES as unknown as boolean,
+        synchronize: env.DB_SYNC as unknown as boolean,
+        autoLoadEntities: env.DB_AUTOLOAD_ENTITIES as unknown as boolean,
       },
       jwt: {
         jwtSecret: env.JWT_SECRET,

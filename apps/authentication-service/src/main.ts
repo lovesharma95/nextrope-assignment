@@ -36,10 +36,10 @@ async function bootstrap() {
   }
 
   await app.listen(port);
+
   Logger.log(
     `🚀 Application is running on: http://localhost:${port}/${routes.applicationRoutes.authentication}`
   );
-
   Logger.log(
     `🚀 Application Swagger is running on: http://localhost:${port}/${routes.swaggerRoutes.authentication}`
   );
