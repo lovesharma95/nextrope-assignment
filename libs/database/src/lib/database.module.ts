@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { Project, TimeLog, User } from 'entity';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
           database: configService.get<string>('db.database'),
           synchronize: configService.get<boolean>('db.synchronize'),
           autoLoadEntities: configService.get<boolean>('db.autoLoadEntities'),
+          entities: [User, TimeLog, Project],
         } as TypeOrmModuleOptions),
     }),
   ],
