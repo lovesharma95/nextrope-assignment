@@ -13,7 +13,7 @@ describe('AppController', () => {
     }).compile();
   });
 
-  describe('getData', () => {
+  describe('healthCheck', () => {
     it('should return "status okay"', () => {
       const appController = app.get<AppController>(AppController);
       expect(appController.healthCheck()).toEqual({ message: 'status okay' });
