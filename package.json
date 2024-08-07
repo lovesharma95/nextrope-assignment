@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "license": "MIT",
   "scripts": {
-    "start": "nx run-many --parallel --target=serve --projects=authentication-service,notification-service,project-management-service,time-tracking-service,user-management-service",
+    "start": "nx run-many --parallel --target=serve --projects=authentication-service,project-management-service,time-tracking-service",
     "test": "nx run-many -t test",
-    "lint": "nx run-many --parallel --target=lint --projects=authentication-service,notification-service,project-management-service,time-tracking-service,user-management-service"
+    "lint": "nx run-many --parallel --target=lint --projects=authentication-service,project-management-service,time-tracking-service"
   },
   "private": true,
   "dependencies": {
