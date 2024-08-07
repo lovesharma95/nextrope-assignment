@@ -8,13 +8,21 @@ import {
   Logger,
   Param,
   Get,
+  UseGuards,
+  Patch,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
 import { ConfigService } from '@nestjs/config';
 
 import { UserService } from './user.service';
-import { VerifyEmailDto, LoginUserDto, RegisterUserDto } from './dto/user.dto';
+import {
+  VerifyEmailDto,
+  LoginUserDto,
+  RegisterUserDto,
+  PatchUserDto,
+  GetUserByIdDto,
+} from './dto/user.dto';
 import {
   SuccessHandler,
   TransformationInterceptor,
@@ -23,6 +31,7 @@ import {
 import { error } from 'constant';
 import { bcrypt, JWT } from 'helpers';
 import { RoleTypeEnum } from 'types';
+import { AdminAuthGuard } from 'guards';
 
 @Injectable({ scope: Scope.REQUEST })
 @UseInterceptors(TransformationInterceptor)
@@ -128,6 +137,35 @@ export class UserController {
     return {
       message: SuccessHandler.getSuccessMessage('DEFAULT', 'User logged in'),
       data: LoginUserDto.intoLoginWithEmail(user, accessToken),
+    };
+  }
+
+  // Below 2 APIs should be part of user management service but because of time constraint i am putting them here
+  @Get('users')
+  @ApiBearerAuth()
+  @UseGuards(AdminAuthGuard)
+  async GetUsers() {
+    const users = await this.userService.getAllUsers();
+
+    return {
+      message: SuccessHandler.getSuccessMessage('GET', 'User'),
+      data: users.map((user) => GetUserByIdDto.intoGetUserResponse(user)),
+    };
+  }
+
+  @Patch('users/:id')
+  @ApiBearerAuth()
+  @UseGuards(AdminAuthGuard)
+  async PatchUsers(@Body() body: PatchUserDto, @Param() param: GetUserByIdDto) {
+    // check user exist
+    const user = await this.userService.getById(param.id);
+    if (!user) throw new ErrorResponse.ParamsNotFoundException(error.notFound);
+
+    const updatedUser = await this.userService.patchUser(body, user);
+
+    return {
+      message: SuccessHandler.getSuccessMessage('PATCH', 'User'),
+      data: PatchUserDto.intoPatchUserResponse(updatedUser),
     };
   }
 }

@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from 'entity';
-import { RegisterUserDto } from './dto/user.dto';
+import { PatchUserDto, RegisterUserDto } from './dto/user.dto';
 import { AuthTypeEnum } from 'types';
 import { ErrorResponse } from 'handlers';
 import { error } from 'constant';
@@ -61,6 +61,26 @@ export class UserService {
       return this.userRepository.save(user);
     } catch (err) {
       this.logger.error(`Error in verifyEmail function in UserService: ${err}`);
+      throw new ErrorResponse.SomeThingWentWrong(error.somethingWentWrong);
+    }
+  }
+
+  // below 2 functions should be part of user management services but because of time constraint i am putting them here
+  async getAllUsers() {
+    try {
+      return this.userRepository.find();
+    } catch (err) {
+      this.logger.error(`Error in getAllUsers function in UserService: ${err}`);
+      throw new ErrorResponse.SomeThingWentWrong(error.somethingWentWrong);
+    }
+  }
+
+  async patchUser(data: PatchUserDto, user: User) {
+    try {
+      user.role = data.role;
+      return this.userRepository.save(user);
+    } catch (err) {
+      this.logger.error(`Error in patchUser function in UserService: ${err}`);
       throw new ErrorResponse.SomeThingWentWrong(error.somethingWentWrong);
     }
   }

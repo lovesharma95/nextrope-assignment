@@ -13,3 +13,7 @@ export const swaggerRoutes = {
   timeTracking: 'time-tracking/swagger',
   userManagement: 'user-management/swagger',
 };
+
+export const authenticationRoutes = {
+  confirmEmail: 'http:localhost:3000/authentication/v1/api/confirm-email/',
+};
