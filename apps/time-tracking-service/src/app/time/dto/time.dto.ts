@@ -4,18 +4,15 @@ import {
   IsString,
   IsNotEmpty,
   Matches,
-  MinLength,
-  IsEmail,
   IsNumber,
   IsDateString,
   IsInt,
-  IsArray,
   IsOptional,
 } from 'class-validator';
 import { Builder } from 'builder-pattern';
 import { regex } from 'constant';
 import { ILogStartTimeResponse, ILogStopTimeResponse } from '../types';
-import { TimeLog, User } from 'entity';
+import { TimeLog } from 'entity';
 
 export class LogStartTimeDto {
   @ApiProperty({

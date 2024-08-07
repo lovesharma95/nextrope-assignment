@@ -3,3 +3,8 @@ export interface ICreateProjectResponse {
   name: string;
   description: string;
 }
+
+export enum GetProjectsSortByEnum {
+  Id = 'id',
+  Name = 'name',
+}

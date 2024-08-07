@@ -45,7 +45,7 @@ import { DatabaseModule } from 'database';
     ProjectModule,
     RouterModule.register([
       {
-        path: '',
+        path: 'project',
         module: ProjectModule,
       },
     ]),
