@@ -31,7 +31,9 @@ export class Config {
         autoLoadEntities: env.DB_AUTOLOAD_ENTITIES as unknown as boolean,
       },
       jwt: {
-        jwtSecret: env.JWT_SECRET,
+        userJwtSecret: env.USER_JWT_SECRET,
+        adminJwtSecret: env.ADMIN_JWT_SECRET,
+        tokenJwtSecret: env.TOKEN_JWT_SECRET,
         jwtSecretAccessTokenExpireTime: env.JWT_SECRET_ACCESS_TOKEN_EXPIRE_TIME,
       },
     };
