@@ -6,11 +6,19 @@ import {
   Matches,
   MinLength,
   IsEmail,
+  IsEnum,
+  IsInt,
 } from 'class-validator';
 import { Builder } from 'builder-pattern';
-import { regex } from 'constant';
-import { IRegisterUserResponse } from '../types';
+import { regex, routes } from 'constant';
+import {
+  IGetUserResponse,
+  ILoginUserResponse,
+  IPatchUserResponse,
+  IRegisterUserResponse,
+} from '../types';
 import { User } from 'entity';
+import { RoleTypeEnum } from 'types';
 
 export class RegisterUserDto {
   @ApiProperty({
@@ -42,7 +50,7 @@ export class RegisterUserDto {
       .id(data.id)
       .email(data.email)
       .emailConfirmationEndpoint(
-        `http:localhost:3000/authentication/v1/api/confirm-email/${accessToken}`
+        `${routes.authenticationRoutes.confirmEmail}${accessToken}`
       )
       .build();
   }
@@ -77,10 +85,53 @@ export class LoginUserDto {
   password: string;
 
   static intoLoginWithEmail(data: User, accessToken: string) {
-    return Builder<any>()
+    return Builder<ILoginUserResponse>()
       .id(data.id)
       .email(data.email)
       .accessToken(accessToken)
+      .build();
+  }
+}
+
+export class GetUserByIdDto {
+  @ApiProperty({
+    type: Number,
+    description: 'ID of the user',
+  })
+  @IsInt()
+  @IsNotEmpty()
+  @Transform(({ value }) => parseInt(value, 10))
+  id: number;
+
+  static intoGetUserResponse(data: User) {
+    return Builder<IGetUserResponse>()
+      .id(data.id)
+      .email(data.email)
+      .role(data.role)
+      .authType(data.auth_type)
+      .isEmailVerified(data.is_email_verified)
+      .build();
+  }
+}
+
+export class PatchUserDto {
+  @ApiProperty({
+    type: 'enum',
+    required: true,
+    description: 'user role',
+    enum: RoleTypeEnum,
+    default: RoleTypeEnum.User,
+  })
+  @IsEnum(RoleTypeEnum)
+  @IsString()
+  @IsNotEmpty()
+  role: RoleTypeEnum;
+
+  static intoPatchUserResponse(data: User) {
+    return Builder<IPatchUserResponse>()
+      .id(data.id)
+      .email(data.email)
+      .role(data.role)
       .build();
   }
 }
