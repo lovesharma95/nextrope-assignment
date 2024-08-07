@@ -28,6 +28,7 @@ export class LogStartTimeDto {
   @ApiProperty({
     type: String,
     description: 'Start time of the task',
+    example: '2024-08-06T10:30:00Z',
   })
   @IsDateString()
   @IsNotEmpty()
@@ -56,6 +57,7 @@ export class LogStopTimeDto {
   @ApiProperty({
     type: String,
     description: 'End time of the task',
+    example: '2024-08-06T12:30:00Z',
   })
   @IsDateString()
   @IsNotEmpty()

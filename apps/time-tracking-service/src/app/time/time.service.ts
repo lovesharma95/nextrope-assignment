@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { Project, TimeLog, User } from 'entity';
 import { LogStartTimeDto, LogStopTimeDto } from './dto/time.dto';
 import { ErrorResponse } from 'handlers';
-import { error } from 'constant';
+import { error, rawQuery } from 'constant';
 
 @Injectable()
 export class TimeService {
@@ -44,6 +44,20 @@ export class TimeService {
       return this.timeRepository.save(timeLog);
     } catch (err) {
       this.logger.error(`Error in stopTimeLog function in TimeService: ${err}`);
+      throw new ErrorResponse.SomeThingWentWrong(error.somethingWentWrong);
+    }
+  }
+
+  async getTotalWorkTimeForAUser(userId: number) {
+    try {
+      return this.timeRepository.query(
+        rawQuery.queryToSelectTotalWorkingTimeForAUser,
+        [userId]
+      );
+    } catch (err) {
+      this.logger.error(
+        `Error in getTotalWorkTime function in TimeService: ${err}`
+      );
       throw new ErrorResponse.SomeThingWentWrong(error.somethingWentWrong);
     }
   }

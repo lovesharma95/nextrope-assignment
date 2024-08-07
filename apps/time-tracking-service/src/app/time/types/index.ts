@@ -14,3 +14,10 @@ export interface ILogStopTimeResponse {
   startTime: Date;
   endTime: Date;
 }
+
+export interface IWorkTimeByDay {
+  [date: string]: {
+    hours: number;
+    descriptions: string[];
+  };
+}

@@ -10,6 +10,7 @@ import {
   Inject,
   Param,
   Put,
+  Get,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
@@ -24,6 +25,8 @@ import {
 import { error } from 'constant';
 import { UserAuthGuard } from 'guards';
 import { REQUEST } from '@nestjs/core';
+import moment from 'moment';
+import { IWorkTimeByDay } from './types';
 
 @Injectable({ scope: Scope.REQUEST })
 @UseInterceptors(TransformationInterceptor)
@@ -82,8 +85,29 @@ export class TimeController {
     const updateTimeLog = await this.timeService.stopTimeLog(timeLog, body);
 
     return {
-      message: SuccessHandler.getSuccessMessage('Put', 'Time log'),
+      message: SuccessHandler.getSuccessMessage('PUT', 'Time log'),
       data: LogStopTimeDto.intoLogStopTimeResponse(updateTimeLog),
+    };
+  }
+
+  @Get('total-work-time')
+  @ApiBearerAuth()
+  @UseGuards(UserAuthGuard)
+  async getTotalWorkTime() {
+    const userId = this.request.jwt.userId;
+
+    const timeLogs = await this.timeService.getTotalWorkTimeForAUser(userId);
+
+    // response object
+    const workTimeData = timeLogs.map((row) => ({
+      date: moment(row.date).format('YYYY-MM-DD'),
+      hours: parseFloat(row.hours),
+      descriptions: row.descriptions || [],
+    }));
+
+    return {
+      message: SuccessHandler.getSuccessMessage('GET', 'Time log'),
+      data: workTimeData,
     };
   }
 }
