@@ -1,7 +1,8 @@
-import { Entity, Column, BeforeInsert } from 'typeorm';
+import { Entity, Column, BeforeInsert, OneToMany } from 'typeorm';
 import { BaseObject } from './base.entity';
 import { AuthTypeEnum, RoleTypeEnum } from 'types';
 import { bcrypt } from 'helpers';
+import { TimeLog } from './timeLog.entity';
 
 @Entity()
 export class User extends BaseObject {
@@ -24,6 +25,9 @@ export class User extends BaseObject {
 
   @Column({ type: 'boolean', default: false })
   is_email_verified!: boolean;
+
+  @OneToMany(() => TimeLog, (timeLog) => timeLog.user)
+  time_logs!: TimeLog[];
 
   @BeforeInsert()
   async hashPassword() {
