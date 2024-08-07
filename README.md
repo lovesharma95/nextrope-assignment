@@ -88,6 +88,12 @@ To lint all services, use:
 ```
 yarn lint
 ```
+
+## Swagger Documentation
+
+```
+<Base_Url>/<service-name>/swagger
+```
     
 ## Endpoints
 
