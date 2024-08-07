@@ -71,6 +71,9 @@ libs/
 
 ## Development
 
+The first step is to create the .env file for each service inside the apps folder,env.example file has been added to all the services, just need to update the db variables and JWT variables
+
+
 To start all the services in parallel, run:4
 
 ```
