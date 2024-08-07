@@ -22,6 +22,7 @@ import {
 } from 'handlers';
 import { error } from 'constant';
 import { bcrypt, JWT } from 'helpers';
+import { RoleTypeEnum } from 'types';
 
 @Injectable({ scope: Scope.REQUEST })
 @UseInterceptors(TransformationInterceptor)
@@ -47,7 +48,9 @@ export class UserController {
 
     // generate jwt access token
     // for simplicity using same jwt generate method for confirm email flow
-    const jwtManager = new JWT(this.configService.get<string>('jwt.jwtSecret'));
+    const jwtManager = new JWT(
+      this.configService.get<string>('jwt.tokenJwtSecret')
+    );
     const accessToken = await jwtManager.generateSessionJWT(
       this.configService.get<string>('jwt.jwtSecretAccessTokenExpireTime'),
       user.id
@@ -64,8 +67,10 @@ export class UserController {
   async VerifyEmail(@Param() param: VerifyEmailDto) {
     // verify jwt access token
     // for simplicity using same jwt verifier method for confirm email flow
-    const jwtManager = new JWT(this.configService.get<string>('jwt.jwtSecret'));
-    const verifyToken: any = await jwtManager.verifySessionJWT(param.token);
+    const tokenManager = new JWT(
+      this.configService.get<string>('jwt.tokenJwtSecret')
+    );
+    const verifyToken = await tokenManager.verifySessionJWT(param.token);
 
     // check user exist
     const user = await this.userService.getById(verifyToken.userId);
@@ -78,6 +83,9 @@ export class UserController {
     await this.userService.verifyEmail(user);
 
     // generate jwt access token
+    const jwtManager = new JWT(
+      this.configService.get<string>('jwt.userJwtSecret')
+    );
     const accessToken = await jwtManager.generateSessionJWT(
       this.configService.get<string>('jwt.jwtSecretAccessTokenExpireTime'),
       user.id
@@ -105,8 +113,13 @@ export class UserController {
     if (!user.is_email_verified)
       throw new ErrorResponse.BadRequest(error.userNotVerified);
 
+    // assign secret based on login user role
+    let secret = this.configService.get<string>('jwt.userJwtSecret');
+    if (user.role === RoleTypeEnum.Administrator)
+      secret = this.configService.get<string>('jwt.adminJwtSecret');
+
     // generate jwt access token
-    const jwtManager = new JWT(this.configService.get<string>('jwt.jwtSecret'));
+    const jwtManager = new JWT(secret);
     const accessToken = await jwtManager.generateSessionJWT(
       this.configService.get<string>('jwt.jwtSecretAccessTokenExpireTime'),
       user.id

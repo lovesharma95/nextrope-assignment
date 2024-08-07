@@ -1,10 +1,6 @@
-import jwt, { SignOptions, JwtPayload } from 'jsonwebtoken';
+import { SignOptions, sign, verify } from 'jsonwebtoken';
 import { ErrorResponse } from 'handlers';
-
-export interface SessionJWT extends JwtPayload {
-  exp: number;
-  iat: number;
-}
+import { SessionJWT } from 'types';
 
 export class JWT {
   constructor(private secret: string) {}
@@ -14,7 +10,7 @@ export class JWT {
     signOptions: SignOptions
   ): Promise<string> {
     return new Promise((resolve, reject) => {
-      jwt.sign(
+      sign(
         payload,
         this.secret,
         {
@@ -46,7 +42,7 @@ export class JWT {
 
   public async verifySessionJWT(token: string): Promise<SessionJWT> {
     return new Promise((resolve, reject) => {
-      jwt.verify(token, this.secret, (err: any, decoded: any) => {
+      verify(token, this.secret, (err: any, decoded: any) => {
         if (
           err !== null ||
           decoded === undefined ||

@@ -10,7 +10,9 @@ interface DBConfigProps {
 }
 
 export interface JWT {
-  jwtSecret: string;
+  userJwtSecret: string;
+  adminJwtSecret: string;
+  tokenJwtSecret: string;
   jwtSecretAccessTokenExpireTime: string;
 }
 
@@ -40,6 +42,8 @@ export enum EnvironmentKeyName {
   DB_DATABASE = 'DB_DATABASE',
   DB_SYNC = 'DB_SYNC',
   DB_AUTOLOAD_ENTITIES = 'DB_AUTOLOAD_ENTITIES',
-  JWT_SECRET = 'JWT_SECRET',
+  USER_JWT_SECRET = 'USER_JWT_SECRET',
+  ADMIN_JWT_SECRET = 'ADMIN_JWT_SECRET',
+  TOKEN_JWT_SECRET = 'TOKEN_JWT_SECRET',
   JWT_SECRET_ACCESS_TOKEN_EXPIRE_TIME = 'JWT_SECRET_ACCESS_TOKEN_EXPIRE_TIME',
 }
