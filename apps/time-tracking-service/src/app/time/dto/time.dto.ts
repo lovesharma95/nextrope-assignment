@@ -9,6 +9,8 @@ import {
   IsNumber,
   IsDateString,
   IsInt,
+  IsArray,
+  IsOptional,
 } from 'class-validator';
 import { Builder } from 'builder-pattern';
 import { regex } from 'constant';
@@ -82,4 +84,16 @@ export class GetLogTimeDto {
   @IsNotEmpty()
   @Transform(({ value }) => parseInt(value, 10))
   timeLogId: number;
+}
+
+export class GetTotalWorkTimeForAllUsersDto {
+  @ApiProperty({
+    type: String,
+    required: false,
+    description: 'user ids (comma-separated)',
+  })
+  @IsString()
+  @IsOptional()
+  @Matches(regex.commaSeperatedNumbers, { message: 'Invalid userId format' })
+  userId: string;
 }

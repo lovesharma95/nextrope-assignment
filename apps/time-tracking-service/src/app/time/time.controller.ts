@@ -11,19 +11,25 @@ import {
   Param,
   Put,
   Get,
+  Query,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
 
 import { TimeService } from './time.service';
-import { GetLogTimeDto, LogStartTimeDto, LogStopTimeDto } from './dto/time.dto';
+import {
+  GetLogTimeDto,
+  GetTotalWorkTimeForAllUsersDto,
+  LogStartTimeDto,
+  LogStopTimeDto,
+} from './dto/time.dto';
 import {
   SuccessHandler,
   TransformationInterceptor,
   ErrorResponse,
 } from 'handlers';
 import { error } from 'constant';
-import { UserAuthGuard } from 'guards';
+import { AdminAuthGuard, UserAuthGuard } from 'guards';
 import { REQUEST } from '@nestjs/core';
 import moment from 'moment';
 import { IWorkTimeByDay } from './types';
@@ -90,10 +96,10 @@ export class TimeController {
     };
   }
 
-  @Get('total-work-time')
+  @Get('user/total-work-time')
   @ApiBearerAuth()
   @UseGuards(UserAuthGuard)
-  async getTotalWorkTime() {
+  async getTotalWorkTimeForAUser() {
     const userId = this.request.jwt.userId;
 
     const timeLogs = await this.timeService.getTotalWorkTimeForAUser(userId);
@@ -104,6 +110,61 @@ export class TimeController {
       hours: parseFloat(row.hours),
       descriptions: row.descriptions || [],
     }));
+
+    return {
+      message: SuccessHandler.getSuccessMessage('GET', 'Time log'),
+      data: workTimeData,
+    };
+  }
+
+  @Get('all-user/total-work-time')
+  @ApiBearerAuth()
+  @UseGuards(AdminAuthGuard)
+  async getTotalWorkTimeForAllUsers(
+    @Query() query: GetTotalWorkTimeForAllUsersDto
+  ) {
+    const timeLogs = await this.timeService.getTotalWorkTimeByAllUsers(
+      query.userId
+    );
+
+    // Format the results
+    const formattedResult = timeLogs.reduce((acc, row) => {
+      const date = moment(row.date).format('YYYY-MM-DD');
+      const userId = row.user_id;
+
+      if (!acc[date]) {
+        acc[date] = {};
+      }
+
+      if (!acc[date][userId]) {
+        acc[date][userId] = { hours: 0, descriptions: [] };
+      }
+
+      acc[date][userId].hours += parseFloat(row.hours);
+      acc[date][userId].descriptions = acc[date][userId].descriptions.concat(
+        row.descriptions || []
+      );
+
+      return acc;
+    }, {} as Record<string, Record<number, { hours: number; descriptions: string[] }>>);
+
+    // Convert to desired format
+    const workTimeData = Object.entries(formattedResult).map(
+      ([date, users]) => ({
+        date,
+        totalHours: Object.values(users).reduce(
+          (sum, user) => sum + user.hours,
+          0
+        ),
+        users: Object.entries(users).map(
+          ([userId, { hours, descriptions }]) => ({
+            userId: parseInt(userId, 10),
+            hours,
+            descriptions,
+          })
+        ),
+      })
+    );
 
     return {
       message: SuccessHandler.getSuccessMessage('GET', 'Time log'),

@@ -62,6 +62,23 @@ export class TimeService {
     }
   }
 
+  async getTotalWorkTimeByAllUsers(userIds: string) {
+    try {
+      const userFilter = userIds
+        ? `AND user_id IN (${userIds.split(',')})`
+        : '';
+
+      return this.timeRepository.query(
+        rawQuery.queryToSelectTotalWorkingTimeForAllUser(userFilter)
+      );
+    } catch (err) {
+      this.logger.error(
+        `Error in getTotalWorkTimeByAllUsers function in TimeService: ${err}`
+      );
+      throw new ErrorResponse.SomeThingWentWrong(error.somethingWentWrong);
+    }
+  }
+
   async getByIdAndUserId(timeLogId: number, userId: number) {
     try {
       return this.timeRepository.findOneBy({
