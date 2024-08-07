@@ -6,8 +6,9 @@ import { AppService } from './app.service';
 import { APP_GUARD, RouterModule } from '@nestjs/core';
 import { LoggerModule } from 'nestjs-pino';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { Config } from './config/config.service';
+import { UserModule } from './user/user.module';
+import { DatabaseModule } from 'database';
 
 @Module({
   imports: [
@@ -40,26 +41,14 @@ import { Config } from './config/config.service';
         };
       },
     }),
-    TypeOrmModule.forRootAsync({
-      inject: [ConfigService],
-      useFactory: async (configService: ConfigService) =>
-        ({
-          type: configService.get<string>('db.type'),
-          host: configService.get<string>('db.host'),
-          port: configService.get<number>('db.port'),
-          username: configService.get<string>('db.username'),
-          password: configService.get<string>('db.password'),
-          database: configService.get<string>('db.database'),
-          synchronize: configService.get<boolean>('db.synchronize'),
-          autoLoadEntities: configService.get<boolean>('db.autoLoadEntities'),
-        } as TypeOrmModuleOptions),
-    }),
-    // RouterModule.register([
-    //   {
-    //     path: 'user',
-    //     module: UserModule,
-    //   },
-    // ]),
+    DatabaseModule,
+    UserModule,
+    RouterModule.register([
+      {
+        path: '',
+        module: UserModule,
+      },
+    ]),
   ],
   controllers: [AppController],
   providers: [
