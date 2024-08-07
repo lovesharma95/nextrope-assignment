@@ -11,7 +11,8 @@
       "dependsOn": ["build"],
       "options": {
         "buildTarget": "time-tracking-service:build",
-        "runBuildTargetDependencies": false
+        "runBuildTargetDependencies": false,
+        "port": 9003
       },
       "configurations": {
         "development": {
