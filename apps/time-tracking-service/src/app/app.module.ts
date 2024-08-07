@@ -8,6 +8,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { Config } from './config/config.service';
 import { DatabaseModule } from 'database';
+import { TimeModule } from './time/time.module';
 
 @Module({
   imports: [
@@ -41,12 +42,13 @@ import { DatabaseModule } from 'database';
       },
     }),
     DatabaseModule,
-    // RouterModule.register([
-    //   {
-    //     path: '',
-    //     module: ,
-    //   },
-    // ]),
+    TimeModule,
+    RouterModule.register([
+      {
+        path: 'time',
+        module: TimeModule,
+      },
+    ]),
   ],
   controllers: [AppController],
   providers: [

@@ -10,4 +10,6 @@ export const error = {
   userNotVerified: 'User not verified! Please verify',
   incorrectCredentials:
     'Incorrect credentials! Please check the email or password',
+  projectNotFound: "We couldn't find the project you're looking for",
+  timeLogAlreadyStopped: 'You have already logged out for this task',
 };

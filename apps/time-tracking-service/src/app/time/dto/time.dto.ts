@@ -1,0 +1,83 @@
+import { ApiProperty } from '@nestjs/swagger';
+import { Transform, TransformFnParams } from 'class-transformer';
+import {
+  IsString,
+  IsNotEmpty,
+  Matches,
+  MinLength,
+  IsEmail,
+  IsNumber,
+  IsDateString,
+  IsInt,
+} from 'class-validator';
+import { Builder } from 'builder-pattern';
+import { regex } from 'constant';
+import { ILogStartTimeResponse, ILogStopTimeResponse } from '../types';
+import { TimeLog, User } from 'entity';
+
+export class LogStartTimeDto {
+  @ApiProperty({
+    type: String,
+    description: 'description of task',
+  })
+  @IsString()
+  @IsNotEmpty()
+  @Transform(({ value }: TransformFnParams) => value.trim().toLowerCase())
+  description: string;
+
+  @ApiProperty({
+    type: String,
+    description: 'Start time of the task',
+  })
+  @IsDateString()
+  @IsNotEmpty()
+  startTime: Date;
+
+  @ApiProperty({
+    type: Number,
+    description: 'project id',
+  })
+  @IsNumber()
+  @IsNotEmpty()
+  projectId: number;
+
+  static intoLogStartTimeResponse(data: TimeLog) {
+    return Builder<ILogStartTimeResponse>()
+      .id(data.id)
+      .description(data.description)
+      .startTime(data.start_time)
+      .endTime(data.end_time)
+      .project(data.project)
+      .build();
+  }
+}
+
+export class LogStopTimeDto {
+  @ApiProperty({
+    type: String,
+    description: 'End time of the task',
+  })
+  @IsDateString()
+  @IsNotEmpty()
+  endTime: Date;
+
+  static intoLogStopTimeResponse(data: TimeLog) {
+    return Builder<ILogStopTimeResponse>()
+      .id(data.id)
+      .description(data.description)
+      .startTime(data.start_time)
+      .endTime(data.end_time)
+      .build();
+  }
+}
+
+export class GetLogTimeDto {
+  @ApiProperty({
+    type: Number,
+    description: 'ID of the time log to stop',
+  })
+  @IsInt()
+  @IsNotEmpty()
+  @Transform(({ value }) => parseInt(value, 10))
+  timeLogId: number;
+}
