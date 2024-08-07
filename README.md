@@ -71,27 +71,54 @@ libs/
 
 ## Development
 
-To start all the services in parallel, run:
+To start all the services in parallel, run:4
 
-    ```
-    yarn start
-    ```
+```
+yarn start
+```
 
 To run tests for all services, use:
 
-    ```
-    yarn test
-    ```
+```
+yarn test
+```
 
 To lint all services, use:
 
-    ```
-    yarn lint
-    ```
+```
+yarn lint
+```
+    
+## Endpoints
 
-## Development
+### Authentication Service
+```
+GET <Base_Url>/authentication/v1/api/health
+POST <Base_Url>/authentication/v1/api/register
+GET <Base_Url>/authentication/v1/api/confirm-email/{token}
+POST <Base_Url>/authentication/v1/api/login
+GET <Base_Url>/authentication/v1/api/users
+PATCH <Base_Url>/authentication/v1/api/users/{id}
+```
+
+### Time Tracking Service
+```
+GET <Base_Url>/time-tracking/v1/api/health
+POST <Base_Url>/time-tracking/v1/api/start
+PUT <Base_Url>/time-tracking/v1/api/stop/{timeLogId}
+GET <Base_Url>/time-tracking/v1/api/user/total-work-time
+GET <Base_Url>/time-tracking/v1/api/all-user/total-work-time
+```
+
+### Project Management Service
+```
+GET <Base_Url>/project-management/v1/api/health
+POST <Base_Url>/project-management/v1/api/project
+GET <Base_Url>/project-management/v1/api/project
+```
+
+## Contribution
 Feel free to fork this repository and create a pull request if you want to contribute to the project.
-
 
 ## License
 This project is licensed under the MIT License.
